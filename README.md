@@ -12,6 +12,6 @@ Technomancers Repo For FIRST Steamworks 2017 Code
 8. Select the repository, and click next.
 9. Select 'Import existing Eclipse projects', and below select the 'Working Tree' folder. Click next.
 10. Make sure your project is selected. Click Finish.
-__You're all set!__
+__You're all set!__ :tada::100:
 
 __NOTICE: Pretty pretty please don't modify .gitignore unless you know what you're doing and why you're doing it.__

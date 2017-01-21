@@ -1,6 +1,8 @@
 package org.usfirst.frc.team6542.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -16,7 +18,9 @@ public class Robot extends IterativeRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
-
+	XboxController myGamepad;
+	XboxDrive drive;
+	Spark sparkLeft, sparkRight;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -26,6 +30,12 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
+		// See if Driver Station has a method to figure out
+		// the port that Xbox Contoller is on
+		myGamepad = new XboxController(0);
+		sparkLeft = new Spark(0);
+		sparkRight = new Spark(1);
+		drive = new XboxDrive(sparkLeft, sparkRight, myGamepad);
 	}
 
 	/**
@@ -68,6 +78,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		drive.drive();
+
 	}
 
 	/**

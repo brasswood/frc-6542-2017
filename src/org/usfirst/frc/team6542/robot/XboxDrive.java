@@ -1,23 +1,23 @@
 package org.usfirst.frc.team6542.robot;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PWMSpeedController;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController;
 
 //like RobotDrive
 public class XboxDrive {
 	
-	PWMSpeedController left;
-	PWMSpeedController right;
+	SpeedController left;
+	SpeedController right;
 	XboxController controller;
 	
-	public XboxDrive(PWMSpeedController left, PWMSpeedController right, XboxController controller) {
+	public XboxDrive(SpeedController left, SpeedController right, XboxController controller) {
 		this.left = left;
 		this.right = right;
 		this.controller = controller;
 	}
 	
 	// Just In Case (TM)
-	public XboxDrive(PWMSpeedController one, PWMSpeedController two, PWMSpeedController three, PWMSpeedController four, XboxController controller) {
+	public XboxDrive(SpeedController one, SpeedController two, SpeedController three, SpeedController four, XboxController controller) {
 		
 	}
 	
@@ -25,32 +25,23 @@ public class XboxDrive {
 	public void drive() {
 		// PWMSpeedController.set() accepts between -1 and 1.
 		// getTriggerAxis returns between 0 and 1.
-		double lTrigger = controller.getTriggerAxis(GenericHID.Hand.kLeft);
-		double rTrigger = controller.getTriggerAxis(GenericHID.Hand.kRight);
+		double speed = controller.getTriggerAxis(GenericHID.Hand.kRight) - controller.getTriggerAxis(GenericHID.Hand.kLeft);
+		double x = controller.getX(GenericHID.Hand.kLeft);
+		double[] sides = getEachSide(x);
+		// whatever rTrigger is, scale
+		// left and right side proportional to that
+		left.set(sides[0] * speed);
+		right.set(sides[1] * speed);
 		
-		// Right trigger should take priority here if both are pressed at
-		// the same time. It's bedtime, I'll think of something better
-		// later.
-		if (rTrigger > 0) {
-			driveForward(rTrigger);
-		} else if (lTrigger > 0) {
-			driveBackward(lTrigger);
-		}
-		else {
-			left.set(0);
-			right.set(0);
-		}
+		
 
 	}
-	
-	private void driveForward(double speed) {
-		//idk what the front of the robot is so we'll just go with this
-		left.set(speed);
-		right.set(-speed);
+	// left comma right
+	private double[] getEachSide(double steeringFactor) {
+		double[] sides = new double[5];
+		sides[0] = 1 - steeringFactor;
+		sides[1] = steeringFactor;
+		return sides;
 	}
 	
-	private void driveBackward(double speed) {
-		left.set(-speed);
-		right.set(speed);
-	}
 }

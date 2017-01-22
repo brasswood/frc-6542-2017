@@ -46,16 +46,24 @@ public class XboxDrive {
 		// getTriggerAxis returns between 0 and 1.
 		double speed = controller.getTriggerAxis(GenericHID.Hand.kRight) - controller.getTriggerAxis(GenericHID.Hand.kLeft);
 		double x = controller.getX(GenericHID.Hand.kLeft);
-		// whatever rTrigger is, scale
-		// left and right side proportional to that
+		double leftOutput = 0;
+		double rightOutput = 0;
+		if (x == 0.0) {
+			leftOutput = speed;
+			rightOutput = -speed;
+		} else if (x > 0.0) {
+			leftOutput = speed;
+			rightOutput = (x - 0.5) * 2 * speed;
+		} else {
+			leftOutput = (x + 0.5) * 2 * speed;
+			rightOutput = -speed;
+		}
+		setLeftRightMotors(leftOutput, rightOutput);
 		
-		
-		
-
 	}
 	
 	protected void setLeftRightMotors(double leftOutput, double rightOutput) {
-		// if only two sides were specified in constructor, fronts were used
+		// if only two sides were specified in constructor, fronts were used and rears were null.
 		frontLeft.set(leftOutput);
 		if (backLeft != null) {
 			backLeft.set(leftOutput);

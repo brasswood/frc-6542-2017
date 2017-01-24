@@ -1,5 +1,6 @@
 package org.usfirst.frc.team6542.robot;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -11,6 +12,14 @@ public class XboxDrive {
 	SpeedController backLeft;
 	SpeedController backRight;
 	XboxController controller;
+	GyroBase gyro;
+	
+	public XboxDrive(SpeedController left, SpeedController right, XboxController controller, GyroBase gyro) {
+		this(left, right, controller);
+		this.gyro = gyro;
+		
+	}
+	
 	/**
 	 * Constructs XboxDrive given two SpeedControllers and an XboxController
 	 * @param left			The controller you want to be the left side of the robot

@@ -2,6 +2,7 @@ package org.usfirst.frc.team6542.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +20,7 @@ public class Robot extends IterativeRobot {
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 	XboxController myGamepad;
+	ADXRS450_Gyro gyro;
 	XboxDrive drive;
 	Spark sparkLeft, sparkRight;
 	/**
@@ -33,6 +35,7 @@ public class Robot extends IterativeRobot {
 		// See if Driver Station has a method to figure out
 		// the port that Xbox Contoller is on
 		myGamepad = new XboxController(0);
+		gyro = new ADXRS450_Gyro();
 		sparkLeft = new Spark(0);
 		sparkRight = new Spark(1);
 		drive = new XboxDrive(sparkLeft, sparkRight, myGamepad);
@@ -79,7 +82,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		drive.drive();
-
 	}
 
 	/**

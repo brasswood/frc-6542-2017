@@ -13,11 +13,12 @@ public class XboxDrive {
 	SpeedController backRight;
 	XboxController controller;
 	GyroBase gyro;
+	double leftCorrect, rightCorrect, prevRate, fineness;
 	
 	public XboxDrive(SpeedController left, SpeedController right, XboxController controller, GyroBase gyro) {
 		this(left, right, controller);
 		this.gyro = gyro;
-		
+		fineness = 0.01;
 	}
 	
 	/**
@@ -49,7 +50,6 @@ public class XboxDrive {
 		this.backRight = backRight;
 	}
 	
-	//called every TeleopPeriod in IterativeRobot?
 	public void drive() {
 		// PWMSpeedController.set() accepts between -1 and 1.
 		// getTriggerAxis returns between 0 and 1.
@@ -60,18 +60,22 @@ public class XboxDrive {
 		if (x == 0.0) {
 			leftOutput = speed;
 			rightOutput = -speed;
+			if (gyro != null && speed != 0) {
+				setLeftRightMotors(leftOutput, rightOutput, gyro);
+				return;
+			}
 		} else if (x > 0.0) {
 			leftOutput = speed;
 			rightOutput = (x - 0.5) * 2 * speed;
+			
 		} else {
 			leftOutput = (x + 0.5) * 2 * speed;
 			rightOutput = -speed;
 		}
-		setLeftRightMotors(leftOutput, rightOutput);
-		
+		setLeftRightMotors(leftOutput, rightOutput);			
 	}
 	
-	protected void setLeftRightMotors(double leftOutput, double rightOutput) {
+	public void setLeftRightMotors(double leftOutput, double rightOutput) {
 		// if only two sides were specified in constructor, fronts were used and rears were null.
 		frontLeft.set(leftOutput);
 		if (backLeft != null) {
@@ -83,6 +87,30 @@ public class XboxDrive {
 				backRight.set(rightOutput);
 		}
 	}
-
 	
+	public void setLeftRightMotors(double leftOutput, double rightOutput, GyroBase gyro) {
+		double rate = gyro.getRate() / 360;
+		// if we went too far, undo and make it finer
+		if (Math.signum(rate) != Math.signum(prevRate)) {
+			if (rate < 0) {
+				this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect + fineness - (fineness/10)));
+			} else if (rate > 0) {
+				this.setLeftRightMotors((leftOutput + leftCorrect + fineness - (fineness/10)), (rightOutput + rightCorrect));
+			} else {
+				return;
+			}
+			fineness = fineness / 10;
+			return;
+		}
+		if (Math.abs(rate) <= fineness) {
+			fineness = fineness / 10;
+		}
+		if (rate < -0.005) {
+			leftCorrect -= fineness;
+		} else if (rate > 0.005) {
+			rightCorrect -= fineness;
+		} else return;
+		prevRate = rate;
+		this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect));
+	}
 }

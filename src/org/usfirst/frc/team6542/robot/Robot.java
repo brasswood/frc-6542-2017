@@ -36,6 +36,7 @@ public class Robot extends IterativeRobot {
 		// the port that Xbox Contoller is on
 		myGamepad = new XboxController(0);
 		gyro = new ADXRS450_Gyro();
+		gyro.calibrate();
 		sparkLeft = new Spark(0);
 		sparkRight = new Spark(1);
 		drive = new XboxDrive(sparkLeft, sparkRight, myGamepad);

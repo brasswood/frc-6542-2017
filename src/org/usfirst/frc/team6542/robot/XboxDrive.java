@@ -92,11 +92,12 @@ public class XboxDrive {
 		double rate = gyro.getRate() / 360;
 		// if we went too far, undo and make it finer
 		if (Math.signum(rate) != Math.signum(prevRate)) {
-			if (rate < 0) {
+			if (rate < -0.005) {
 				this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect + fineness - (fineness/10)));
-			} else if (rate > 0) {
+			} else if (rate > 0.005) {
 				this.setLeftRightMotors((leftOutput + leftCorrect + fineness - (fineness/10)), (rightOutput + rightCorrect));
 			} else {
+				this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect));
 				return;
 			}
 			fineness = fineness / 10;
@@ -109,7 +110,7 @@ public class XboxDrive {
 			leftCorrect -= fineness;
 		} else if (rate > 0.005) {
 			rightCorrect -= fineness;
-		} else return;
+		}
 		prevRate = rate;
 		this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect));
 	}

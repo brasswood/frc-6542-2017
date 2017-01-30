@@ -13,12 +13,11 @@ public class XboxDrive {
 	SpeedController backRight;
 	XboxController controller;
 	GyroBase gyro;
-	double leftCorrect, rightCorrect, prevRate, fineness;
+	double leftCorrect, rightCorrect;
 	
 	public XboxDrive(SpeedController left, SpeedController right, XboxController controller, GyroBase gyro) {
 		this(left, right, controller);
 		this.gyro = gyro;
-		fineness = 0.01;
 	}
 	
 	/**
@@ -89,29 +88,12 @@ public class XboxDrive {
 	}
 	
 	public void setLeftRightMotors(double leftOutput, double rightOutput, GyroBase gyro) {
-		double rate = gyro.getRate() / 360;
-		// if we went too far, undo and make it finer
-		if (Math.signum(rate) != Math.signum(prevRate)) {
-			if (rate < -0.005) {
-				this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect + fineness - (fineness/10)));
-			} else if (rate > 0.005) {
-				this.setLeftRightMotors((leftOutput + leftCorrect + fineness - (fineness/10)), (rightOutput + rightCorrect));
-			} else {
-				this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect));
-				return;
-			}
-			fineness = fineness / 10;
-			return;
+		double heading = gyro.getAngle();
+		if (heading < -2) {
+			leftCorrect -= 0.01;
+		} else if (heading > 2) {
+			rightCorrect -= 0.01;
 		}
-		if (Math.abs(rate) <= fineness) {
-			fineness = fineness / 10;
-		}
-		if (rate < -0.005) {
-			leftCorrect -= fineness;
-		} else if (rate > 0.005) {
-			rightCorrect -= fineness;
-		}
-		prevRate = rate;
 		this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect));
 	}
 }

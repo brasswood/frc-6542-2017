@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
 		gyro.calibrate();
 		sparkLeft = new Spark(0);
 		sparkRight = new Spark(1);
-		drive = new XboxDrive(sparkLeft, sparkRight, myGamepad);
+		drive = new XboxDrive(sparkLeft, sparkRight, myGamepad, gyro);
 		System.out.println("robotInit complete");
 	}
 
@@ -86,6 +86,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		drive.drive();
+		SmartDashboard.putNumber("Gyro", gyro.getAngle());
 	}
 
 	/**

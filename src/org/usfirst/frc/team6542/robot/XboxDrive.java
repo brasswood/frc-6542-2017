@@ -13,7 +13,6 @@ public class XboxDrive {
 	SpeedController backRight;
 	XboxController controller;
 	GyroBase gyro;
-	double leftCorrect, rightCorrect;
 	
 	public XboxDrive(SpeedController left, SpeedController right, XboxController controller, GyroBase gyro) {
 		this(left, right, controller);
@@ -48,35 +47,36 @@ public class XboxDrive {
 		this.backLeft = backLeft;
 		this.backRight = backRight;
 	}
-	
+	// TODO: wait a fraction of a second to reset gyro to account for momentum
 	public void drive() {
 		// PWMSpeedController.set() accepts between -1 and 1.
 		// getTriggerAxis returns between 0 and 1.
 		double speed = controller.getTriggerAxis(GenericHID.Hand.kRight) - controller.getTriggerAxis(GenericHID.Hand.kLeft);
 		double x = controller.getX(GenericHID.Hand.kLeft);
-		double leftOutput = 0;
-		double rightOutput = 0;
-		if (x == 0.0) {
-			leftOutput = speed;
-			rightOutput = -speed;
-			if (gyro != null && speed != 0) {
-				setLeftRightMotors(leftOutput, rightOutput, gyro);
+		double leftSpeed = 0;
+		double rightSpeed = 0;
+		System.out.println(speed);
+		if (Math.abs(x) <= 0.15) {
+			leftSpeed = speed;
+			rightSpeed = -speed;
+			if (gyro != null) {
+				setLeftRightMotors(leftSpeed, rightSpeed, gyro);
 			}
 		} else {
 			if (x > 0.0) {
-				leftOutput = speed;
-				rightOutput = (x - 0.5) * 2 * speed;
+				leftSpeed = speed;
+				rightSpeed = (x - 0.5) * 2 * speed;
 				
 			} else {
-				leftOutput = (x + 0.5) * 2 * speed;
-				rightOutput = -speed;
+				leftSpeed = (x + 0.5) * 2 * speed;
+				rightSpeed = -speed;
 			}
-			setLeftRightMotors(leftOutput, rightOutput);
+			setLeftRightMotors(leftSpeed, rightSpeed);
 			if (gyro != null) {
-				gyro.reset();
+					System.out.println("reset gyro");
+					gyro.reset();
 			}
 		}
-
 	}
 	
 	public void setLeftRightMotors(double leftOutput, double rightOutput) {
@@ -91,14 +91,29 @@ public class XboxDrive {
 				backRight.set(rightOutput);
 		}
 	}
-	
-	public void setLeftRightMotors(double leftOutput, double rightOutput, GyroBase gyro) {
+	// TODO: Clean this up
+	public void setLeftRightMotors(double leftSpeed, double rightSpeed, GyroBase gyro) {
 		double heading = gyro.getAngle();
-		if (heading < -2) {
-			leftCorrect -= 0.1;
-		} else if (heading > 2) {
-			rightCorrect -= 0.1;
+		double leftOutput = leftSpeed;
+		double rightOutput = rightSpeed;
+		if (heading > 1) {
+			if (leftSpeed > 0) {
+				leftOutput = (0.7 * leftOutput);
+				System.out.println("Adjust leftOutput");
+			} else {
+				rightOutput = (0.7 * rightOutput);
+				System.out.println("Adjust rightOutput");
+			}
+		} else if (heading < -1) {
+			if (leftSpeed > 0) {
+				rightOutput = (0.7 * rightOutput);
+				System.out.println("Adjust rightOutput");
+			} else {
+				leftOutput = (0.7 * leftOutput);
+				System.out.println("Adjust leftOutput");
+			}
 		}
-		this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect));
+		System.out.println(leftOutput + ", " + rightOutput + ", " + heading);
+		this.setLeftRightMotors((leftOutput), (rightOutput));
 	}
 }

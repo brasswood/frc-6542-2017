@@ -29,6 +29,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		System.out.println("robotInit method started");
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
@@ -36,10 +37,12 @@ public class Robot extends IterativeRobot {
 		// the port that Xbox Contoller is on
 		myGamepad = new XboxController(0);
 		gyro = new ADXRS450_Gyro();
+		System.out.println("Calibrating Gyro...");
 		gyro.calibrate();
 		sparkLeft = new Spark(0);
 		sparkRight = new Spark(1);
 		drive = new XboxDrive(sparkLeft, sparkRight, myGamepad);
+		System.out.println("robotInit complete");
 	}
 
 	/**

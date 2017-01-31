@@ -61,17 +61,22 @@ public class XboxDrive {
 			rightOutput = -speed;
 			if (gyro != null && speed != 0) {
 				setLeftRightMotors(leftOutput, rightOutput, gyro);
-				return;
 			}
-		} else if (x > 0.0) {
-			leftOutput = speed;
-			rightOutput = (x - 0.5) * 2 * speed;
-			
 		} else {
-			leftOutput = (x + 0.5) * 2 * speed;
-			rightOutput = -speed;
+			if (x > 0.0) {
+				leftOutput = speed;
+				rightOutput = (x - 0.5) * 2 * speed;
+				
+			} else {
+				leftOutput = (x + 0.5) * 2 * speed;
+				rightOutput = -speed;
+			}
+			setLeftRightMotors(leftOutput, rightOutput);
+			if (gyro != null) {
+				gyro.reset();
+			}
 		}
-		setLeftRightMotors(leftOutput, rightOutput);			
+
 	}
 	
 	public void setLeftRightMotors(double leftOutput, double rightOutput) {
@@ -90,9 +95,9 @@ public class XboxDrive {
 	public void setLeftRightMotors(double leftOutput, double rightOutput, GyroBase gyro) {
 		double heading = gyro.getAngle();
 		if (heading < -2) {
-			leftCorrect -= 0.01;
+			leftCorrect -= 0.1;
 		} else if (heading > 2) {
-			rightCorrect -= 0.01;
+			rightCorrect -= 0.1;
 		}
 		this.setLeftRightMotors((leftOutput + leftCorrect), (rightOutput + rightCorrect));
 	}

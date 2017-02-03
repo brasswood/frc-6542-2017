@@ -54,7 +54,12 @@ public class XboxDrive {
 		// PWMSpeedController.set() accepts between -1 and 1.
 		// getTriggerAxis returns between 0 and 1.
 		double speed = controller.getTriggerAxis(GenericHID.Hand.kRight) - controller.getTriggerAxis(GenericHID.Hand.kLeft);
-		double x = controller.getX(GenericHID.Hand.kLeft);
+		double x;
+		if (controller.getX(GenericHID.Hand.kLeft) < 0) {
+			x = -Math.pow(controller.getX(GenericHID.Hand.kLeft), 2);
+		} else {
+			x = Math.pow(controller.getX(GenericHID.Hand.kLeft), 2);
+		}
 		double leftSpeed = 0;
 		double rightSpeed = 0;
 		System.out.println(speed);

@@ -12,6 +12,7 @@ public class XboxDrive {
 	SpeedController backLeft;
 	SpeedController backRight;
 	XboxController controller;
+	boolean headingIsSet;
 	GyroBase gyro;
 	
 	public XboxDrive(SpeedController left, SpeedController right, XboxController controller, GyroBase gyro) {
@@ -29,6 +30,7 @@ public class XboxDrive {
 		frontLeft = left;
 		frontRight = right;
 		this.controller = controller;
+		headingIsSet = true;
 	}
 	
 	// Just In Case (TM)
@@ -60,9 +62,21 @@ public class XboxDrive {
 			leftSpeed = speed;
 			rightSpeed = -speed;
 			if (gyro != null) {
-				setLeftRightMotors(leftSpeed, rightSpeed, gyro);
+				if (!headingIsSet){
+					if (!resetGyro()) {
+						System.out.println("not ready");
+						setLeftRightMotors(0, 0);
+						return;
+					}
+				}
+				else {
+					setLeftRightMotors(leftSpeed, rightSpeed, gyro);
+				}
 			}
 		} else {
+			if (Math.abs(speed) > 0) {
+				headingIsSet = false;
+			}
 			if (x > 0.0) {
 				leftSpeed = speed;
 				rightSpeed = (x - 0.5) * 2 * speed;
@@ -72,10 +86,6 @@ public class XboxDrive {
 				rightSpeed = -speed;
 			}
 			setLeftRightMotors(leftSpeed, rightSpeed);
-			if (gyro != null) {
-					System.out.println("reset gyro");
-					gyro.reset();
-			}
 		}
 	}
 	
@@ -97,6 +107,7 @@ public class XboxDrive {
 		double leftOutput = leftSpeed;
 		double rightOutput = rightSpeed;
 		if (heading > 1) {
+			//leftSpeed is our base, if leftSpeed is forward than the robot should go forward
 			if (leftSpeed > 0) {
 				leftOutput = (0.7 * leftOutput);
 				System.out.println("Adjust leftOutput");
@@ -113,7 +124,18 @@ public class XboxDrive {
 				System.out.println("Adjust leftOutput");
 			}
 		}
-		System.out.println(leftOutput + ", " + rightOutput + ", " + heading);
+		System.out.println(leftOutput + ", " + rightOutput + ", " + heading + ", " + gyro.getRate());
 		this.setLeftRightMotors((leftOutput), (rightOutput));
+	}
+	
+	private boolean resetGyro() {
+		if (Math.abs(gyro.getRate()) < 1) {
+			gyro.reset();
+			headingIsSet = true;
+			return true;
+		} else {
+			headingIsSet = false;
+			return false;
+		}
 	}
 }

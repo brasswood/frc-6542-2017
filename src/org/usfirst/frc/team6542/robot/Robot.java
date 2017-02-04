@@ -3,6 +3,7 @@ package org.usfirst.frc.team6542.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +36,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto choices", chooser);
 		// See if Driver Station has a method to figure out
 		// the port that Xbox Contoller is on
+		CameraServer.getInstance().startAutomaticCapture();
 		myGamepad = new XboxController(0);
 		gyro = new ADXRS450_Gyro();
 		System.out.println("Calibrating Gyro...");

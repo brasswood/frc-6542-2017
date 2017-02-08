@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -24,6 +25,7 @@ public class Robot extends IterativeRobot {
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
 	Spark sparkLeft, sparkRight;
+	Timer autonTimer = new Timer();
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -34,9 +36,9 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
+		// CameraServer.getInstance().startAutomaticCapture(0);
 		// See if Driver Station has a method to figure out
 		// the port that Xbox Contoller is on
-		CameraServer.getInstance().startAutomaticCapture();
 		myGamepad = new XboxController(0);
 		gyro = new ADXRS450_Gyro();
 		System.out.println("Calibrating Gyro...");
@@ -60,10 +62,12 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autoSelected = chooser.getSelected();
-		// autoSelected = SmartDashboard.getString("Auto Selector",
-		// defaultAuto);
+		// autoSelected = chooser.getSelected();
+		 autoSelected = SmartDashboard.getString("Auto Selector",
+		 defaultAuto);
 		System.out.println("Auto selected: " + autoSelected);
+		autonTimer.reset();
+		autonTimer.start();
 	}
 
 	/**
@@ -73,7 +77,11 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		switch (autoSelected) {
 		case customAuto:
-			// Put custom auto code here
+			if (autonTimer.get() < 3) {
+				drive.setLeftRightMotors(0.5, 0.5);
+			} else {
+				drive.setLeftRightMotors(0, 0);
+			}
 			break;
 		case defaultAuto:
 		default:

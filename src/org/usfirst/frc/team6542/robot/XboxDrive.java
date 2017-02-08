@@ -49,7 +49,6 @@ public class XboxDrive {
 		this.backLeft = backLeft;
 		this.backRight = backRight;
 	}
-	// TODO: wait a fraction of a second to reset gyro to account for momentum
 	public void drive() {
 		// PWMSpeedController.set() accepts between -1 and 1.
 		// getTriggerAxis returns between 0 and 1.
@@ -66,22 +65,7 @@ public class XboxDrive {
 		if (Math.abs(x) <= 0.15) {
 			leftSpeed = speed;
 			rightSpeed = -speed;
-			if (gyro != null) {
-				if (!headingIsSet){
-					if (!resetGyro()) {
-						System.out.println("not ready");
-						setLeftRightMotors(0, 0);
-						return;
-					}
-				}
-				else {
-					setLeftRightMotors(leftSpeed, rightSpeed, gyro);
-				}
-			}
 		} else {
-			if (Math.abs(speed) > 0) {
-				headingIsSet = false;
-			}
 			if (x > 0.0) {
 				leftSpeed = speed;
 				rightSpeed = (x - 0.5) * 2 * speed;
@@ -90,8 +74,10 @@ public class XboxDrive {
 				leftSpeed = (x + 0.5) * 2 * speed;
 				rightSpeed = -speed;
 			}
-			setLeftRightMotors(leftSpeed, rightSpeed);
 		}
+		
+		if (gyro != null) {setLeftRightMotors(leftSpeed, rightSpeed, gyro);}
+		else {setLeftRightMotors(leftSpeed, rightSpeed);}
 	}
 	
 	public void setLeftRightMotors(double leftOutput, double rightOutput) {
@@ -111,26 +97,34 @@ public class XboxDrive {
 		double heading = gyro.getAngle();
 		double leftOutput = leftSpeed;
 		double rightOutput = rightSpeed;
-		if (heading > 1) {
-			//leftSpeed is our base, if leftSpeed is forward than the robot should go forward
-			if (leftSpeed > 0) {
-				leftOutput = (0.7 * leftOutput);
-				System.out.println("Adjust leftOutput");
+		if (leftSpeed == -rightSpeed) {
+			if (headingIsSet) {
+				if (heading > 1) {
+					//leftSpeed is our base, if leftSpeed is forward than the robot should go forward
+					if (leftSpeed > 0) {
+						leftOutput = (0.7 * leftOutput);
+						System.out.println("Adjust leftOutput");
+					} else {
+						rightOutput = (0.7 * rightOutput);
+						System.out.println("Adjust rightOutput");
+					}
+				} else if (heading < -1) {
+					if (leftSpeed > 0) {
+						rightOutput = (0.7 * rightSpeed);
+						System.out.println("Adjust rightOutput");
+					} else {
+						leftOutput = (0.7 * leftSpeed);
+						System.out.println("Adjust leftOutput");
+					}
+				}
 			} else {
-				rightOutput = (0.7 * rightOutput);
-				System.out.println("Adjust rightOutput");
-			}
-		} else if (heading < -1) {
-			if (leftSpeed > 0) {
-				rightOutput = (0.7 * rightOutput);
-				System.out.println("Adjust rightOutput");
-			} else {
-				leftOutput = (0.7 * leftOutput);
-				System.out.println("Adjust leftOutput");
+				resetGyro();
+				leftOutput = 0;
+				rightOutput = 0;
 			}
 		}
 		System.out.println(leftOutput + ", " + rightOutput + ", " + heading + ", " + gyro.getRate());
-		this.setLeftRightMotors((leftOutput), (rightOutput));
+		this.setLeftRightMotors(leftOutput, rightOutput);
 	}
 	
 	private boolean resetGyro() {

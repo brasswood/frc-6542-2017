@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.networktables.*;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,6 +27,7 @@ public class Robot extends IterativeRobot {
 	XboxDrive drive;
 	Spark sparkLeft, sparkRight;
 	Timer autonTimer = new Timer();
+	// NetworkTable myTable;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -36,6 +38,7 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
+		// myTable = NetworkTable.getTable("datatable");
 		// CameraServer.getInstance().startAutomaticCapture(0);
 		// See if Driver Station has a method to figure out
 		// the port that Xbox Contoller is on

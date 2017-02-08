@@ -3,8 +3,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
-//like RobotDrive
+// like RobotDrive
 public class XboxDrive {
 	
 	SpeedController frontLeft;
@@ -75,9 +76,14 @@ public class XboxDrive {
 				rightSpeed = -speed;
 			}
 		}
-		
+
+		SmartDashboard.putNumber("leftSpeed", leftSpeed);
+		SmartDashboard.putNumber("rightSpeed", rightSpeed);
 		if (gyro != null) {setLeftRightMotors(leftSpeed, rightSpeed, gyro);}
 		else {setLeftRightMotors(leftSpeed, rightSpeed);}
+		
+		// debug
+		SmartDashboard.putBoolean("headingIsSet", headingIsSet);
 	}
 	
 	public void setLeftRightMotors(double leftOutput, double rightOutput) {
@@ -124,7 +130,14 @@ public class XboxDrive {
 				rightOutput = 0;
 			}
 		} else {headingIsSet = false;}
+		
+		// debug
+		SmartDashboard.putNumber("leftOutput", leftOutput);
+		SmartDashboard.putBoolean("lAdjust", leftOutput != leftSpeed);
+		SmartDashboard.putNumber("rightOutput", rightOutput);
+		SmartDashboard.putBoolean("rAdjust", rightOutput != rightSpeed);
 		System.out.println(leftOutput + ", " + rightOutput + ", " + heading + ", " + gyro.getRate());
+		
 		this.setLeftRightMotors(leftOutput, rightOutput);
 	}
 	

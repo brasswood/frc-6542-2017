@@ -118,6 +118,7 @@ public class XboxDrive {
 					}
 				}
 			} else {
+				System.out.println("heading not set yet");
 				resetGyro();
 				leftOutput = 0;
 				rightOutput = 0;

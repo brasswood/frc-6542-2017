@@ -123,7 +123,7 @@ public class XboxDrive {
 				leftOutput = 0;
 				rightOutput = 0;
 			}
-		}
+		} else {headingIsSet = false;}
 		System.out.println(leftOutput + ", " + rightOutput + ", " + heading + ", " + gyro.getRate());
 		this.setLeftRightMotors(leftOutput, rightOutput);
 	}

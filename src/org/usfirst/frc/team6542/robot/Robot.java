@@ -2,10 +2,12 @@ package org.usfirst.frc.team6542.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.networktables.*;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,10 +24,13 @@ public class Robot extends IterativeRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
-	XboxController myGamepad;
+	XboxController gamepad;
+	boolean aToggle;
+	boolean aPrev;
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
 	Spark sparkLeft, sparkRight;
+	TalonSRX ballCannon;
 	Timer autonTimer = new Timer();
 	// NetworkTable myTable;
 	/**
@@ -42,13 +47,14 @@ public class Robot extends IterativeRobot {
 		// CameraServer.getInstance().startAutomaticCapture(0);
 		// See if Driver Station has a method to figure out
 		// the port that Xbox Contoller is on
-		myGamepad = new XboxController(0);
+		gamepad = new XboxController(0);
 		gyro = new ADXRS450_Gyro();
 		System.out.println("Calibrating Gyro...");
 		gyro.calibrate();
 		sparkLeft = new Spark(0);
 		sparkRight = new Spark(1);
-		drive = new XboxDrive(sparkLeft, sparkRight, myGamepad, gyro);
+		ballCannon = new TalonSRX(2);
+		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
 		System.out.println("robotInit complete");
 	}
 
@@ -99,6 +105,19 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		drive.drive();
+		
+		if (gamepad.getAButton() && !aPrev) {
+			aToggle = !aToggle;
+		}
+		// NOTE: The following line must go after getAButton
+		// is compared to aPrev
+		aPrev = gamepad.getAButton();
+		
+		if (aToggle) {
+			double speed = Math.hypot(gamepad.getX(Hand.kRight), gamepad.getY(Hand.kRight));
+			ballCannon.set(speed);
+		}
+		
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());
 	}
 

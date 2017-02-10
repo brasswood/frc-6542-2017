@@ -55,6 +55,7 @@ public class Robot extends IterativeRobot {
 		sparkRight = new Spark(1);
 		ballCannon = new TalonSRX(2);
 		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
+		CameraServer.getInstance().startAutomaticCapture();
 		System.out.println("robotInit complete");
 	}
 

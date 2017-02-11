@@ -54,8 +54,8 @@ public class Robot extends IterativeRobot {
 		gyro = new ADXRS450_Gyro();
 		System.out.println("Calibrating Gyro...");
 		gyro.calibrate();
-		sparkLeft = new Spark(0);
-		sparkRight = new Spark(1);
+		sparkLeft = new Spark(1);
+		sparkRight = new Spark(0);
 		ballCannon = new TalonSRX(2);
 		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
 		CameraServer.getInstance().startAutomaticCapture();

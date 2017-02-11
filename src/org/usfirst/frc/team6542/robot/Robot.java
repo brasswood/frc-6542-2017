@@ -32,7 +32,7 @@ public class Robot extends IterativeRobot {
 	Spark sparkLeft, sparkRight;
 	TalonSRX ballCannon;
 	Timer autonTimer = new Timer();
-	final int[] channels = new int[] {1, 2, 14, 15};
+	final int[] channels = new int[] {0, 1, 14, 15};
 	PowerDistributionPanel pdp;
 	// NetworkTable myTable;
 	/**

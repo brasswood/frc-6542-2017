@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.networktables.*;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
@@ -32,6 +32,8 @@ public class Robot extends IterativeRobot {
 	Spark sparkLeft, sparkRight;
 	TalonSRX ballCannon;
 	Timer autonTimer = new Timer();
+	final int[] channels = new int[] {1, 2, 14, 15};
+	PowerDistributionPanel pdp;
 	// NetworkTable myTable;
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -43,6 +45,7 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
+		pdp = new PowerDistributionPanel();
 		// myTable = NetworkTable.getTable("datatable");
 		// CameraServer.getInstance().startAutomaticCapture(0);
 		// See if Driver Station has a method to figure out
@@ -120,6 +123,9 @@ public class Robot extends IterativeRobot {
 		}
 		
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());
+		for (int ch : channels) {
+			SmartDashboard.putNumber(Integer.toString(ch), pdp.getCurrent(ch));
+		}
 	}
 
 	/**

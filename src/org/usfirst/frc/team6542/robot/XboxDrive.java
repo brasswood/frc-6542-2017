@@ -1,8 +1,8 @@
 package org.usfirst.frc.team6542.robot;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 
 // like RobotDrive
@@ -53,12 +53,19 @@ public class XboxDrive {
 	public void drive() {
 		// PWMSpeedController.set() accepts between -1 and 1.
 		// getTriggerAxis returns between 0 and 1.
-		double speed = controller.getTriggerAxis(GenericHID.Hand.kRight) - controller.getTriggerAxis(GenericHID.Hand.kLeft);
-		double x;
-		if (controller.getX(GenericHID.Hand.kLeft) < 0) {
-			x = -Math.pow(controller.getX(GenericHID.Hand.kLeft), 2);
+		double speed = controller.getTriggerAxis(Hand.kRight) - controller.getTriggerAxis(Hand.kLeft);
+		// square speed
+		if (speed < 0) {
+			speed = -Math.pow(speed, 2);
 		} else {
-			x = Math.pow(controller.getX(GenericHID.Hand.kLeft), 2);
+			speed = Math.pow(speed, 2);
+		}
+		double x = controller.getX(Hand.kLeft);
+		// square x
+		if (x < 0) {
+			x = -Math.pow(x, 2);
+		} else {
+			x = Math.pow(x, 2);
 		}
 		double leftSpeed = 0;
 		double rightSpeed = 0;

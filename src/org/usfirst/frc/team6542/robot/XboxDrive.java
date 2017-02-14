@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.Timer;
 
 // like RobotDrive
 public class XboxDrive {
@@ -15,10 +16,12 @@ public class XboxDrive {
 	XboxController controller;
 	boolean headingIsSet;
 	GyroBase gyro;
+	Timer timer = new Timer();
 	
 	public XboxDrive(SpeedController left, SpeedController right, XboxController controller, GyroBase gyro) {
 		this(left, right, controller);
 		this.gyro = gyro;
+
 	}
 	
 	/**
@@ -70,9 +73,21 @@ public class XboxDrive {
 		double leftSpeed = 0;
 		double rightSpeed = 0;
 		System.out.println(speed);
+		if (timer.get() >= 0.5) {
+			gyro.reset();
+			timer.stop();
+			timer.reset();
+		}
 		if (Math.abs(x) <= 0.15) {
 			leftSpeed = speed;
 			rightSpeed = -speed;
+			if (gyro != null) {
+				if (timer.get() < 0.5) {
+					setLeftRightMotors(leftSpeed, rightSpeed);
+				} else {
+					setLeftRightMotors(leftSpeed, rightSpeed, gyro);
+				}
+			}
 		} else {
 			if (x > 0.0) {
 				leftSpeed = speed;
@@ -81,6 +96,12 @@ public class XboxDrive {
 			} else {
 				leftSpeed = (x + 0.5) * 2 * speed;
 				rightSpeed = -speed;
+			}
+			setLeftRightMotors(leftSpeed, rightSpeed);
+			if (gyro != null) {
+					System.out.println("reset gyro");
+					timer.reset();
+					timer.start();
 			}
 		}
 
@@ -158,4 +179,5 @@ public class XboxDrive {
 			return false;
 		}
 	}
+
 }

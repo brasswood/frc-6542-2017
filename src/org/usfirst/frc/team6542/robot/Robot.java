@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.TalonSRX;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,7 +30,7 @@ public class Robot extends IterativeRobot {
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
 	Spark sparkLeft, sparkRight;
-	TalonSRX ballCannon;
+	Talon ballCannon;
 	Timer autonTimer = new Timer();
 	final int[] channels = new int[] {0, 1, 14, 15};
 	PowerDistributionPanel pdp;
@@ -56,7 +56,7 @@ public class Robot extends IterativeRobot {
 		gyro.calibrate();
 		sparkLeft = new Spark(1);
 		sparkRight = new Spark(0);
-		ballCannon = new TalonSRX(2);
+		ballCannon = new Talon(2);
 		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
 		CameraServer.getInstance().startAutomaticCapture();
 		System.out.println("robotInit complete");

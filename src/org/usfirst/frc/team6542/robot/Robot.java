@@ -116,6 +116,8 @@ public class Robot extends IterativeRobot {
 		
 		if (aToggle) {
 			ballCannon.set(1);
+		} else {
+			ballCannon.set(0);
 		}
 		
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());

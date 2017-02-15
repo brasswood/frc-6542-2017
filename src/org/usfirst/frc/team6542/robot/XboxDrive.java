@@ -129,7 +129,7 @@ public class XboxDrive {
 		if (backRight != null) {
 				backRight.set(rightOutput);
 		}
-		return (leftOutput == 0 && rightOutput == 0);
+		return (leftOutput != 0 && rightOutput != 0);
 	}
 	// TODO: Clean this up
 	public boolean setLeftRightMotors(double leftSpeed, double rightSpeed, GyroBase gyro) {

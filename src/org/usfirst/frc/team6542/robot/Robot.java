@@ -29,12 +29,11 @@ public class Robot extends IterativeRobot {
 	boolean aPrev;
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
-	Talon ballCannon;
 	Spark sparkLeft, sparkRight;
+	Talon ballCannon;
 	Timer autonTimer = new Timer();
-	final int[] channels = new int[] {0, 1, 14, 15};
+	final int[] channels = new int[] {0, 1, 13, 14, 15};
 	PowerDistributionPanel pdp;
-	// NetworkTable myTable;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -46,16 +45,14 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
 		pdp = new PowerDistributionPanel();
-		// myTable = NetworkTable.getTable("datatable");
-		// CameraServer.getInstance().startAutomaticCapture(0);
 		// See if Driver Station has a method to figure out
 		// the port that Xbox Contoller is on
 		gamepad = new XboxController(0);
 		gyro = new ADXRS450_Gyro();
 		System.out.println("Calibrating Gyro...");
 		gyro.calibrate();
-		sparkLeft = new Spark(1);
-		sparkRight = new Spark(0);
+		sparkLeft = new Spark(0);
+		sparkRight = new Spark(1);
 		ballCannon = new Talon(2);
 		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
 		CameraServer.getInstance().startAutomaticCapture();
@@ -76,8 +73,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		// autoSelected = chooser.getSelected();
-		 autoSelected = SmartDashboard.getString("Auto Selector",
-		 defaultAuto);
+		autoSelected = SmartDashboard.getString("Auto Selector",
+		defaultAuto);
 		System.out.println("Auto selected: " + autoSelected);
 		autonTimer.reset();
 		autonTimer.start();
@@ -109,17 +106,17 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		drive.drive();
-		
-		if (gamepad.getAButton() && !aPrev) {
-			aToggle = !aToggle;
+
+		boolean a = gamepad.getAButton();
+		if (a && !aPrev) {
+			aToggle= !aToggle;
 		}
 		// NOTE: The following line must go after getAButton
 		// is compared to aPrev
-		aPrev = gamepad.getAButton();
+		aPrev = a;
 		
 		if (aToggle) {
-			double speed = Math.hypot(gamepad.getX(Hand.kRight), gamepad.getY(Hand.kRight));
-			ballCannon.set(speed);
+			ballCannon.set(1);
 		}
 		
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());

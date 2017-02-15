@@ -54,7 +54,10 @@ public class XboxDrive {
 		this.backLeft = backLeft;
 		this.backRight = backRight;
 	}
-	public void drive() {
+	public boolean drive() {
+		// the return of our function to check if the robot is driving
+		// so that we can disable the ball cannon if it is
+		boolean r = false;
 		// PWMSpeedController.set() accepts between -1 and 1.
 		// getTriggerAxis returns between 0 and 1.
 		double speed = controller.getTriggerAxis(Hand.kRight) - controller.getTriggerAxis(Hand.kLeft);
@@ -84,9 +87,9 @@ public class XboxDrive {
 			rightSpeed = -speed;
 			if (gyro != null) {
 				if (timer.get() < 0.5) {
-					setLeftRightMotors(leftSpeed, rightSpeed);
+					r = setLeftRightMotors(leftSpeed, rightSpeed);
 				} else {
-					setLeftRightMotors(leftSpeed, rightSpeed, gyro);
+					r = setLeftRightMotors(leftSpeed, rightSpeed, gyro);
 				}
 			}
 		} else {
@@ -109,13 +112,13 @@ public class XboxDrive {
 		SmartDashboard.putNumber("leftSpeed", leftSpeed);
 		SmartDashboard.putNumber("rightSpeed", rightSpeed);
 		if (gyro != null) {setLeftRightMotors(leftSpeed, rightSpeed, gyro);}
-		else {setLeftRightMotors(leftSpeed, rightSpeed);}
-		
+		else {r = setLeftRightMotors(leftSpeed, rightSpeed);}
 		// debug
 		SmartDashboard.putBoolean("headingIsSet", headingIsSet);
+		return r;
 	}
 	
-	public void setLeftRightMotors(double leftOutput, double rightOutput) {
+	public boolean setLeftRightMotors(double leftOutput, double rightOutput) {
 		// if only two sides were specified in constructor, fronts were used and rears were null.
 		frontLeft.set(leftOutput);
 		if (backLeft != null) {
@@ -126,9 +129,10 @@ public class XboxDrive {
 		if (backRight != null) {
 				backRight.set(rightOutput);
 		}
+		return (leftOutput == 0 && rightOutput == 0);
 	}
 	// TODO: Clean this up
-	public void setLeftRightMotors(double leftSpeed, double rightSpeed, GyroBase gyro) {
+	public boolean setLeftRightMotors(double leftSpeed, double rightSpeed, GyroBase gyro) {
 		double heading = gyro.getAngle();
 		double leftOutput = leftSpeed;
 		double rightOutput = rightSpeed;
@@ -167,7 +171,7 @@ public class XboxDrive {
 		SmartDashboard.putBoolean("rAdjust", rightOutput != rightSpeed);
 		System.out.println(leftOutput + ", " + rightOutput + ", " + heading + ", " + gyro.getRate());
 		
-		this.setLeftRightMotors(leftOutput, rightOutput);
+		return this.setLeftRightMotors(leftOutput, rightOutput);
 	}
 	
 	private boolean resetGyro() {

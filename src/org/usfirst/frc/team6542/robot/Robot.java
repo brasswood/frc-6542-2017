@@ -104,7 +104,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		drive.drive();
+		boolean driving = drive.drive();
 
 		boolean a = gamepad.getAButton();
 		if (a && !aPrev) {
@@ -113,7 +113,9 @@ public class Robot extends IterativeRobot {
 		// NOTE: The following line must go after getAButton
 		// is compared to aPrev
 		aPrev = a;
-		
+		if (driving) {
+			aToggle = false;
+		}
 		if (aToggle) {
 			ballCannon.set(1);
 		} else {

@@ -16,11 +16,12 @@ public class XboxDrive {
 	XboxController controller;
 	boolean headingIsSet;
 	GyroBase gyro;
-	Timer timer = new Timer();
+	Timer timer;
 	
 	public XboxDrive(SpeedController left, SpeedController right, XboxController controller, GyroBase gyro) {
 		this(left, right, controller);
 		this.gyro = gyro;
+		this.timer = new Timer();
 
 	}
 	
@@ -73,7 +74,7 @@ public class XboxDrive {
 		double leftSpeed = 0;
 		double rightSpeed = 0;
 		System.out.println(speed);
-		if (timer.get() >= 0.5) {
+		if (gyro != null && timer.get() >= 0.5) {
 			gyro.reset();
 			timer.stop();
 			timer.reset();

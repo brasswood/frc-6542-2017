@@ -29,8 +29,8 @@ public class Robot extends IterativeRobot {
 	boolean aPrev;
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
-	Spark sparkLeft, sparkRight;
 	Talon ballCannon;
+	Spark sparkLeft, sparkRight;
 	Timer autonTimer = new Timer();
 	final int[] channels = new int[] {0, 1, 14, 15};
 	PowerDistributionPanel pdp;

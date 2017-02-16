@@ -14,7 +14,6 @@ public class XboxDrive {
 	SpeedController backLeft;
 	SpeedController backRight;
 	XboxController controller;
-	boolean headingIsSet;
 	GyroBase gyro;
 	Timer timer;
 	
@@ -35,7 +34,6 @@ public class XboxDrive {
 		frontLeft = left;
 		frontRight = right;
 		this.controller = controller;
-		headingIsSet = true;
 	}
 	
 	// Just In Case (TM)
@@ -101,7 +99,7 @@ public class XboxDrive {
 				leftSpeed = (x + 0.5) * 2 * speed;
 				rightSpeed = -speed;
 			}
-			setLeftRightMotors(leftSpeed, rightSpeed);
+			r = setLeftRightMotors(leftSpeed, rightSpeed);
 			if (gyro != null) {
 					System.out.println("reset gyro");
 					timer.reset();
@@ -111,10 +109,9 @@ public class XboxDrive {
 
 		SmartDashboard.putNumber("leftSpeed", leftSpeed);
 		SmartDashboard.putNumber("rightSpeed", rightSpeed);
-		if (gyro != null) {setLeftRightMotors(leftSpeed, rightSpeed, gyro);}
+		if (gyro != null) {r = setLeftRightMotors(leftSpeed, rightSpeed, gyro);}
 		else {r = setLeftRightMotors(leftSpeed, rightSpeed);}
 		// debug
-		SmartDashboard.putBoolean("headingIsSet", headingIsSet);
 		return r;
 	}
 	
@@ -136,34 +133,24 @@ public class XboxDrive {
 		double heading = gyro.getAngle();
 		double leftOutput = leftSpeed;
 		double rightOutput = rightSpeed;
-		if (leftSpeed == -rightSpeed) {
-			if (headingIsSet) {
-				if (heading > 1) {
-					//leftSpeed is our base, if leftSpeed is forward than the robot should go forward
-					if (leftSpeed > 0) {
-						leftOutput = (0.7 * leftOutput);
-						System.out.println("Adjust leftOutput");
-					} else {
-						rightOutput = (0.7 * rightOutput);
-						System.out.println("Adjust rightOutput");
-					}
-				} else if (heading < -1) {
-					if (leftSpeed > 0) {
-						rightOutput = (0.7 * rightSpeed);
-						System.out.println("Adjust rightOutput");
-					} else {
-						leftOutput = (0.7 * leftSpeed);
-						System.out.println("Adjust leftOutput");
-					}
-				}
+		if (heading > 1) {
+			//leftSpeed is our base, if leftSpeed is forward than the robot should go forward
+			if (leftSpeed > 0) {
+				leftOutput = (0.7 * leftSpeed);
+				System.out.println("Adjust leftOutput");
 			} else {
-				System.out.println("heading not set yet");
-				resetGyro();
-				leftOutput = 0;
-				rightOutput = 0;
+				rightOutput = (0.7 * rightSpeed);
+				System.out.println("Adjust rightOutput");
 			}
-		} else {headingIsSet = false;}
-		
+		} else if (heading < -1) {
+			if (leftSpeed > 0) {
+				rightOutput = (0.7 * rightSpeed);
+				System.out.println("Adjust rightOutput");
+			} else {
+				leftOutput = (0.7 * leftSpeed);
+				System.out.println("Adjust leftOutput");
+			}
+		}
 		// debug
 		SmartDashboard.putNumber("leftOutput", leftOutput);
 		SmartDashboard.putBoolean("lAdjust", leftOutput != leftSpeed);
@@ -173,16 +160,4 @@ public class XboxDrive {
 		
 		return this.setLeftRightMotors(leftOutput, rightOutput);
 	}
-	
-	private boolean resetGyro() {
-		if (Math.abs(gyro.getRate()) < 1) {
-			gyro.reset();
-			headingIsSet = true;
-			return true;
-		} else {
-			headingIsSet = false;
-			return false;
-		}
-	}
-
 }

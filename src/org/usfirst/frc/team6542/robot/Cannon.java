@@ -23,6 +23,9 @@ public class Cannon {
 		aToggle = setting;
 	}
 	public boolean shoot() {
+		if (aToggle) {shooter.set(1);}
+		else {shooter.set(0);}
+		
 		boolean a = gamepad.getAButton();
 		if (a && !aPrev) {
 			aToggle= !aToggle;
@@ -30,8 +33,6 @@ public class Cannon {
 		// NOTE: The following line must go after getAButton
 		// is compared to aPrev
 		aPrev = a;
-		if (aToggle) {shooter.set(1);}
-		else {shooter.set(0);}
 		return aToggle;
 	}
 	public boolean deJam() {

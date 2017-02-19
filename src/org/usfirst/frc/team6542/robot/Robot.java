@@ -106,7 +106,8 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		if (drive.drive()) {
 			cannon.setAToggle(false);
-		} else {cannon.shoot();}
+		}
+		cannon.shoot();
 		cannon.deJam();
 		
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());

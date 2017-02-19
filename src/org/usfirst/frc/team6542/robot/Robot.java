@@ -24,12 +24,11 @@ public class Robot extends IterativeRobot {
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 	XboxController gamepad;
-	boolean aToggle;
-	boolean aPrev;
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
+	Cannon cannon;
 	Spark sparkLeft, sparkRight;
-	Talon ballCannon;
+	Talon shooter;
 	Timer autonTimer = new Timer();
 	final int[] channels = new int[] {0, 1, 13, 14, 15};
 	PowerDistributionPanel pdp;
@@ -52,8 +51,9 @@ public class Robot extends IterativeRobot {
 		gyro.calibrate();
 		sparkLeft = new Spark(0);
 		sparkRight = new Spark(1);
-		ballCannon = new Talon(2);
+		shooter = new Talon(2);
 		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
+		cannon = new Cannon(shooter, gamepad);
 		CameraServer.getInstance().startAutomaticCapture();
 		System.out.println("robotInit complete");
 	}
@@ -104,23 +104,11 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		boolean driving = drive.drive();
-
-		boolean a = gamepad.getAButton();
-		if (a && !aPrev) {
-			aToggle= !aToggle;
+		if (drive.drive()) {
+			cannon.setAToggle(false);
 		}
-		// NOTE: The following line must go after getAButton
-		// is compared to aPrev
-		aPrev = a;
-		if (driving) {
-			aToggle = false;
-		}
-		if (aToggle) {
-			ballCannon.set(1);
-		} else {
-			ballCannon.set(0);
-		}
+		cannon.shoot();
+		cannon.deJam();
 		
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());
 		for (int ch : channels) {

@@ -16,6 +16,7 @@ public class XboxDrive {
 	XboxController controller;
 	GyroBase gyro;
 	Timer timer;
+	public final double limit = 0.7;
 	
 	public XboxDrive(SpeedController left, SpeedController right, XboxController controller, GyroBase gyro) {
 		this(left, right, controller);
@@ -117,6 +118,8 @@ public class XboxDrive {
 	
 	public boolean setLeftRightMotors(double leftOutput, double rightOutput) {
 		// if only two sides were specified in constructor, fronts were used and rears were null.
+		leftOutput = limit * leftOutput;
+		rightOutput = limit * rightOutput;
 		frontLeft.set(leftOutput);
 		if (backLeft != null) {
 			backLeft.set(leftOutput);

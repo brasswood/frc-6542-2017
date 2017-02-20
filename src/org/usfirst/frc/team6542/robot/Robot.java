@@ -107,7 +107,9 @@ public class Robot extends IterativeRobot {
 		if (drive.drive()) {
 			cannon.setAToggle(false);
 		}
-		cannon.shoot();
+		if (cannon.shoot()) {
+			gyro.reset();
+		}
 		cannon.deJam();
 		
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());

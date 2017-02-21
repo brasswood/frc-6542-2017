@@ -38,7 +38,7 @@ public class Cannon {
 	public boolean deJam() {
 		if (deJammer != null) {
 			if (gamepad.getBButton()) {
-				deJammer.set(0.1);
+				deJammer.set(-0.5);
 				return true;
 			} else {
 				deJammer.set(0);

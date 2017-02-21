@@ -29,6 +29,7 @@ public class Robot extends IterativeRobot {
 	Cannon cannon;
 	Spark sparkLeft, sparkRight;
 	Talon shooter;
+	Talon deJammer;
 	Timer autonTimer = new Timer();
 	final int[] channels = new int[] {0, 1, 13, 14, 15};
 	PowerDistributionPanel pdp;
@@ -52,8 +53,9 @@ public class Robot extends IterativeRobot {
 		sparkLeft = new Spark(0);
 		sparkRight = new Spark(1);
 		shooter = new Talon(2);
+		deJammer = new Talon(3);
 		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
-		cannon = new Cannon(shooter, gamepad);
+		cannon = new Cannon(shooter, deJammer, gamepad);
 		CameraServer.getInstance().startAutomaticCapture();
 		System.out.println("robotInit complete");
 	}

@@ -112,7 +112,9 @@ public class Robot extends IterativeRobot {
 		if (cannon.shoot()) {
 			gyro.reset();
 		}
-		cannon.deJam();
+		if (cannon.deJam()) {
+			gyro.reset();
+		}
 		
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());
 		for (int ch : channels) {

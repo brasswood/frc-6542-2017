@@ -139,18 +139,18 @@ public class XboxDrive {
 		if (heading > 1) {
 			//leftSpeed is our base, if leftSpeed is forward than the robot should go forward
 			if (leftSpeed > 0) {
-				leftOutput = (0.7 * leftSpeed);
+				leftOutput = (heading * leftSpeed)/180;
 				System.out.println("Adjust leftOutput");
 			} else {
-				rightOutput = (0.7 * rightSpeed);
+				rightOutput = (heading * rightSpeed)/180;
 				System.out.println("Adjust rightOutput");
 			}
 		} else if (heading < -1) {
 			if (leftSpeed > 0) {
-				rightOutput = (0.7 * rightSpeed);
+				rightOutput = (heading * rightSpeed)/180;
 				System.out.println("Adjust rightOutput");
 			} else {
-				leftOutput = (0.7 * leftSpeed);
+				leftOutput = (heading * leftSpeed)/180;
 				System.out.println("Adjust leftOutput");
 			}
 		}

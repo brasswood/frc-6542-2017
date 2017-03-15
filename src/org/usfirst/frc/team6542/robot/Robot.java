@@ -110,12 +110,12 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		if (drive.drive()) {
-			cannon.setAToggle(false);
-			ropeClimber.setClimberMotor(0.0);
-		} else if (ropeClimber.climb()) {
+		if (ropeClimber.climb()) {
 			cannon.setAToggle(false);
 			gyro.reset();
+		} else if (drive.drive()) {
+			cannon.setAToggle(false);
+			ropeClimber.setClimberMotor(0.0);
 		}
 		if (cannon.shoot()) {
 			gyro.reset();

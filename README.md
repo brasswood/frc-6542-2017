@@ -14,4 +14,11 @@ Technomancers Repo For FIRST Steamworks 2017 Code
 10. Make sure your project is selected. Click Finish.
 __You're all set!__ :tada: :100:
 
+# Getting the latest version of the source
+1. Open Git Bash
+2. Make sure you are in `frc-6542-2017`. If not, type `cd frc-6542-2017`
+3. Make sure you have an internet connection
+4. Type `git pull`
+5. Done.
+
 __NOTICE: Pretty pretty please don't modify .gitignore unless you know what you're doing and why you're doing it.__

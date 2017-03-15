@@ -27,9 +27,11 @@ public class Robot extends IterativeRobot {
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
 	Cannon cannon;
+	RopeClimber ropeClimber;
 	Spark sparkLeft, sparkRight;
 	Talon shooter;
 	Talon deJammer;
+	Talon climber;
 	Timer autonTimer = new Timer();
 	final int[] channels = new int[] {0, 1, 13, 14, 15};
 	PowerDistributionPanel pdp;
@@ -54,8 +56,10 @@ public class Robot extends IterativeRobot {
 		sparkRight = new Spark(1);
 		shooter = new Talon(2);
 		deJammer = new Talon(3);
+		climber = new Talon(4);
 		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
 		cannon = new Cannon(shooter, deJammer, gamepad);
+		ropeClimber = new RopeClimber(climber, gamepad);
 		CameraServer.getInstance().startAutomaticCapture();
 		System.out.println("robotInit complete");
 	}
@@ -108,6 +112,10 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		if (drive.drive()) {
 			cannon.setAToggle(false);
+			ropeClimber.setClimberMotor(0.0);
+		} else if (ropeClimber.climb()) {
+			cannon.setAToggle(false);
+			gyro.reset();
 		}
 		if (cannon.shoot()) {
 			gyro.reset();

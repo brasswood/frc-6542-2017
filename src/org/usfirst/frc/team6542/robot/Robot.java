@@ -92,15 +92,15 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		switch (autoSelected) {
 		case customAuto:
-			if (autonTimer.get() < 3) {
-				drive.setLeftRightMotors(0.5, 0.5);
-			} else {
-				drive.setLeftRightMotors(0, 0);
-			}
 			break;
 		case defaultAuto:
 		default:
 			// Put default auto code here
+			if (autonTimer.get() < 3.5) {
+				drive.setLeftRightMotors(0.5, 0.5);
+			} else {
+				drive.setLeftRightMotors(0, 0);
+			}
 			break;
 		}
 	}

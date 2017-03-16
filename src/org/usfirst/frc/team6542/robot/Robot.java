@@ -110,9 +110,17 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		
+		SmartDashboard.putNumber("Gyro", gyro.getAngle());
+		for (int ch : channels) {
+			SmartDashboard.putNumber(Integer.toString(ch), pdp.getCurrent(ch));
+		}
+		
 		if (ropeClimber.climb()) {
 			cannon.setAToggle(false);
 			gyro.reset();
+			// quick n dirty system disabler
+			return;
 		} else if (drive.drive()) {
 			cannon.setAToggle(false);
 			ropeClimber.setClimberMotor(0.0);
@@ -124,10 +132,7 @@ public class Robot extends IterativeRobot {
 			gyro.reset();
 		}
 		
-		SmartDashboard.putNumber("Gyro", gyro.getAngle());
-		for (int ch : channels) {
-			SmartDashboard.putNumber(Integer.toString(ch), pdp.getCurrent(ch));
-		}
+
 	}
 
 	/**

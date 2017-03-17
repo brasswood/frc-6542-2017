@@ -97,7 +97,7 @@ public class Robot extends IterativeRobot {
 		default:
 			// Put default auto code here
 			if (autonTimer.get() < 3.5) {
-				drive.setLeftRightMotors(0.5, 0.5);
+				drive.setLeftRightMotors(0.5, -0.5);
 			} else {
 				drive.setLeftRightMotors(0, 0);
 			}

@@ -15,10 +15,12 @@ public class RopeClimber {
 		if (gamepad.getBumper(Hand.kRight)){
 			double x = gamepad.getX(Hand.kRight);
 			double y = gamepad.getY(Hand.kRight);
-			climber.set(Math.hypot(x, y));
+			if (y < 0) {
+				setClimberMotor(-Math.hypot(x, y));
+			} else {setClimberMotor(Math.hypot(x, y));}
 			return true;
 		} else {
-			climber.set(0.0);
+			setClimberMotor(0.0);
 			return false;
 		}
 	}

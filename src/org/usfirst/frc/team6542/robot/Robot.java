@@ -2,6 +2,8 @@ package org.usfirst.frc.team6542.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.*;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -57,9 +59,9 @@ public class Robot extends IterativeRobot {
 		shooter = new Talon(2);
 		deJammer = new Talon(3);
 		climber = new Talon(4);
-		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
-		cannon = new Cannon(shooter, deJammer, gamepad);
-		ropeClimber = new RopeClimber(climber, gamepad);
+		drive = new XboxDrive(sparkLeft, sparkRight, gyro);
+		cannon = new Cannon(shooter, deJammer);
+		ropeClimber = new RopeClimber(climber);
 		CameraServer.getInstance().startAutomaticCapture();
 		System.out.println("robotInit complete");
 	}
@@ -115,8 +117,14 @@ public class Robot extends IterativeRobot {
 		for (int ch : channels) {
 			SmartDashboard.putNumber(Integer.toString(ch), pdp.getCurrent(ch));
 		}
-		
-		if (ropeClimber.climb()) {
+		double lx = gamepad.getX(Hand.kLeft);
+		double ly = gamepad.getY(Hand.kLeft);
+		double rx = gamepad.getX(Hand.kRight);
+		double ry = gamepad.getY(Hand.kRight);
+		boolean lBump = gamepad.getBumper(Hand.kLeft);
+		boolean rBump = gamepad.getBumper(Hand.kRight);
+		if (rBump) {
+			ropeClimber.setClimberMotor(Math.hypot(rx, ry) * Math.signum(ry));
 			cannon.setAToggle(false);
 			gyro.reset();
 			// quick n dirty system disabler

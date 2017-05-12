@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 
 public class MyGamepad extends XboxController {
 	private boolean aPrev = false;
-	boolean aToggle = false;
+	private boolean aToggle = false;
 	
 	public MyGamepad(int port){
 		super(port);

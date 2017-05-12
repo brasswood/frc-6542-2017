@@ -8,8 +8,6 @@ public class Cannon extends MySafety {
 	SpeedController shooter;
 	SpeedController deJammer;
 	XboxController gamepad;
-	boolean aPrev = false;
-	boolean aToggle = false;
 	public Cannon(SpeedController shooter) {
 		this.shooter = shooter;
 		motors[0] = shooter;

@@ -53,7 +53,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto choices", chooser);
 		pdp = new PowerDistributionPanel();
 		// See if Driver Station has a method to figure out
-		// the port that Xbox Contoller is on
+		// the port that Xbox Controller is on
 		gamepad = new MyGamepad(0);
 		gyro = new ADXRS450_Gyro();
 		System.out.println("Calibrating Gyro...");

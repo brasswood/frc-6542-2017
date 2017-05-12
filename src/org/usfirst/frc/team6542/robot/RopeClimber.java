@@ -6,9 +6,7 @@ public class RopeClimber extends MySafety {
 	SpeedController climber;
 	public RopeClimber(SpeedController climber) {
 		this.climber = climber;
-	}
-	public void setClimberMotor(double value) {
-		climber.set(value);
+		motors[0] = climber;
 	}
 	
 }

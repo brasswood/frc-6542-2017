@@ -7,19 +7,19 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.Timer;
 
 // like RobotDrive
-public class XboxDrive {
+public class XboxDrive extends MySafety {
 	
 	SpeedController frontLeft;
 	SpeedController frontRight;
 	SpeedController backLeft;
 	SpeedController backRight;
-	XboxController controller;
+	XboxController gamepad;
 	GyroBase gyro;
 	Timer timer;
 	public final double limit = 0.7;
 	
-	public XboxDrive(SpeedController left, SpeedController right, XboxController controller, GyroBase gyro) {
-		this(left, right, controller);
+	public XboxDrive(SpeedController left, SpeedController right, XboxController gamepad, GyroBase gyro) {
+		this(left, right, gamepad);
 		this.gyro = gyro;
 		this.timer = new Timer();
 
@@ -31,10 +31,12 @@ public class XboxDrive {
 	 * @param right			The controller you want to be the right side of the robot
 	 * @param controller	The XboxController object you would like to use
 	 */
-	public XboxDrive(SpeedController left, SpeedController right, XboxController controller) {
+	public XboxDrive(SpeedController left, SpeedController right, XboxController gamepad) {
 		frontLeft = left;
+		motors[0] = left;
 		frontRight = right;
-		this.controller = controller;
+		motors[1] = right;
+		this.gamepad = gamepad;
 	}
 	
 	// Just In Case (TM)
@@ -46,12 +48,17 @@ public class XboxDrive {
 	 * @param backRight		The controller for the back right side of the robot
 	 * @param controller	The XboxController object you would like to use
 	 */
-	public XboxDrive(SpeedController frontRight, SpeedController frontLeft, SpeedController backLeft, SpeedController backRight, XboxController controller) {
+	public XboxDrive(SpeedController frontRight, SpeedController frontLeft, SpeedController backLeft, SpeedController backRight, XboxController gamepad) {
 		// merge controllers on same side
 		this.frontRight = frontRight;
+		motors[1] = frontRight;
 		this.frontLeft = frontLeft;
+		motors[0] = frontLeft;
 		this.backLeft = backLeft;
+		motors[2] = backLeft;
 		this.backRight = backRight;
+		motors[3] = backRight;
+		this.gamepad = gamepad;
 	}
 	public boolean drive() {
 		// the return of our function to check if the robot is driving
@@ -59,14 +66,14 @@ public class XboxDrive {
 		boolean r = false;
 		// PWMSpeedController.set() accepts between -1 and 1.
 		// getTriggerAxis returns between 0 and 1.
-		double speed = controller.getTriggerAxis(Hand.kRight) - controller.getTriggerAxis(Hand.kLeft);
+		double speed = gamepad.getTriggerAxis(Hand.kRight) - gamepad.getTriggerAxis(Hand.kLeft);
 		// square speed
 		if (speed < 0) {
 			speed = -Math.pow(speed, 2);
 		} else {
 			speed = Math.pow(speed, 2);
 		}
-		double x = controller.getX(Hand.kLeft);
+		double x = gamepad.getX(Hand.kLeft);
 		// square x
 		if (x < 0) {
 			x = -Math.pow(x, 2);
@@ -120,14 +127,14 @@ public class XboxDrive {
 		// if only two sides were specified in constructor, fronts were used and rears were null.
 		leftOutput = limit * leftOutput;
 		rightOutput = limit * rightOutput;
-		frontLeft.set(leftOutput);
+		set(frontLeft, leftOutput);
 		if (backLeft != null) {
-			backLeft.set(leftOutput);
+			set(backLeft, leftOutput);
 		}
 		
-		frontRight.set(rightOutput);
+		set(frontRight, rightOutput);
 		if (backRight != null) {
-				backRight.set(rightOutput);
+				set(backRight, rightOutput);
 		}
 		return (leftOutput != 0 && rightOutput != 0);
 	}

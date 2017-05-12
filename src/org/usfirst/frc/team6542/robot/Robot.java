@@ -1,7 +1,6 @@
 package org.usfirst.frc.team6542.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.*;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -12,6 +11,8 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+// Viking2014
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -25,11 +26,14 @@ public class Robot extends IterativeRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
-	XboxController gamepad;
+	MyGamepad gamepad;
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
 	Cannon cannon;
 	RopeClimber ropeClimber;
+	// There are four controllers, but the ones on the same side are
+	// hooked together with a y-cable, so it's really two controllers in the
+	// program
 	Spark sparkLeft, sparkRight;
 	Talon shooter;
 	Talon deJammer;
@@ -50,7 +54,7 @@ public class Robot extends IterativeRobot {
 		pdp = new PowerDistributionPanel();
 		// See if Driver Station has a method to figure out
 		// the port that Xbox Contoller is on
-		gamepad = new XboxController(0);
+		gamepad = new MyGamepad(0);
 		gyro = new ADXRS450_Gyro();
 		System.out.println("Calibrating Gyro...");
 		gyro.calibrate();
@@ -59,7 +63,7 @@ public class Robot extends IterativeRobot {
 		shooter = new Talon(2);
 		deJammer = new Talon(3);
 		climber = new Talon(4);
-		drive = new XboxDrive(sparkLeft, sparkRight, gyro);
+		drive = new XboxDrive(sparkLeft, sparkRight, gamepad, gyro);
 		cannon = new Cannon(shooter, deJammer);
 		ropeClimber = new RopeClimber(climber);
 		CameraServer.getInstance().startAutomaticCapture();
@@ -117,30 +121,41 @@ public class Robot extends IterativeRobot {
 		for (int ch : channels) {
 			SmartDashboard.putNumber(Integer.toString(ch), pdp.getCurrent(ch));
 		}
-		double lx = gamepad.getX(Hand.kLeft);
-		double ly = gamepad.getY(Hand.kLeft);
 		double rx = gamepad.getX(Hand.kRight);
 		double ry = gamepad.getY(Hand.kRight);
-		boolean lBump = gamepad.getBumper(Hand.kLeft);
 		boolean rBump = gamepad.getBumper(Hand.kRight);
+		boolean aToggle = gamepad.getAToggle();
+		boolean bButton = gamepad.getBButton();
+		ropeClimber.setSafe(true);
+		cannon.setSafe(true);
+		drive.setSafe(true);
 		if (rBump) {
-			ropeClimber.setClimberMotor(Math.hypot(rx, ry) * Math.signum(ry));
-			cannon.setAToggle(false);
+			ropeClimber.set(climber, Math.hypot(rx, ry) * Math.signum(ry));
+			cannon.setSafe(false);
+			drive.setSafe(false);
 			gyro.reset();
 			// quick n dirty system disabler
-			return;
-		} else if (drive.drive()) {
-			cannon.setAToggle(false);
-			ropeClimber.setClimberMotor(0.0);
+		} else {
+			ropeClimber.set(climber, 0);
 		}
-		if (cannon.shoot()) {
-			gyro.reset();
+		if (drive.drive()) {
+			cannon.setSafe(false);
+			ropeClimber.set(climber, 0.0);
 		}
-		if (cannon.deJam()) {
-			gyro.reset();
+		if (aToggle) {
+			if (cannon.set(shooter, 1)) {
+				gyro.reset();
+			}
+		} else {
+			cannon.set(shooter, 0);
 		}
-		
-
+		if (bButton) {
+			if (cannon.deJam()) {
+				gyro.reset();
+			}
+		} else {
+			cannon.set(deJammer, 0);
+		}
 	}
 
 	/**

@@ -1,8 +1,6 @@
 package org.usfirst.frc.team6542.robot;
 import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -13,12 +11,12 @@ public class XboxDrive extends MySafety {
 	SpeedController frontRight;
 	SpeedController backLeft;
 	SpeedController backRight;
-	XboxController gamepad;
+	MyHID gamepad;
 	GyroBase gyro;
 	Timer timer;
 	public final double limit = 0.7;
 	
-	public XboxDrive(SpeedController left, SpeedController right, XboxController gamepad, GyroBase gyro) {
+	public XboxDrive(SpeedController left, SpeedController right, MyHID gamepad, GyroBase gyro) {
 		this(left, right, gamepad);
 		this.gyro = gyro;
 		this.timer = new Timer();
@@ -31,7 +29,7 @@ public class XboxDrive extends MySafety {
 	 * @param right			The controller you want to be the right side of the robot
 	 * @param controller	The XboxController object you would like to use
 	 */
-	public XboxDrive(SpeedController left, SpeedController right, XboxController gamepad) {
+	public XboxDrive(SpeedController left, SpeedController right, MyHID gamepad) {
 		frontLeft = left;
 		motors[0] = left;
 		frontRight = right;
@@ -48,7 +46,7 @@ public class XboxDrive extends MySafety {
 	 * @param backRight		The controller for the back right side of the robot
 	 * @param controller	The XboxController object you would like to use
 	 */
-	public XboxDrive(SpeedController frontRight, SpeedController frontLeft, SpeedController backLeft, SpeedController backRight, XboxController gamepad) {
+	public XboxDrive(SpeedController frontRight, SpeedController frontLeft, SpeedController backLeft, SpeedController backRight, MyHID gamepad) {
 		// merge controllers on same side
 		this.frontRight = frontRight;
 		motors[1] = frontRight;
@@ -66,14 +64,14 @@ public class XboxDrive extends MySafety {
 		boolean r = false;
 		// PWMSpeedController.set() accepts between -1 and 1.
 		// getTriggerAxis returns between 0 and 1.
-		double speed = gamepad.getTriggerAxis(Hand.kRight) - gamepad.getTriggerAxis(Hand.kLeft);
+		double speed = gamepad.getDriveForward() - gamepad.getDriveBackward();
 		// square speed
 		if (speed < 0) {
 			speed = -Math.pow(speed, 2);
 		} else {
 			speed = Math.pow(speed, 2);
 		}
-		double x = gamepad.getX(Hand.kLeft);
+		double x = gamepad.getDriveX();
 		// square x
 		if (x < 0) {
 			x = -Math.pow(x, 2);

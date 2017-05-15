@@ -25,7 +25,8 @@ public class Robot extends IterativeRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
-	MyHID gamepad;
+	MyHID gamepad, lunchpad;
+	// TODO: SmartDashboard chooser
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
 	Cannon cannon;

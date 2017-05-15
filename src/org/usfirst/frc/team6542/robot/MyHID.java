@@ -6,7 +6,7 @@ public class MyHID extends XboxController {
 
 	private boolean cannonPrev = false;
 	private boolean cannonToggle = false;
-	private final Type type;
+	private Type type;
 	
 	public MyHID(int port, Type type) {
 		super(port);
@@ -115,5 +115,8 @@ public class MyHID extends XboxController {
 	public double getRawAxis(int axis) {
 		if (axis == -1) {return 0;}
 		else {return super.getRawAxis(axis);}
+	}
+	public void setType(Type type) {
+		this.type = type;
 	}
 }

@@ -25,8 +25,8 @@ public class Robot extends IterativeRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
-	MyHID gamepad, lunchpad;
-	// TODO: SmartDashboard chooser
+	SendableChooser<MyHID.Type> controllerChooser = new SendableChooser<>();
+	MyHID gamepad;
 	ADXRS450_Gyro gyro;
 	XboxDrive drive;
 	Cannon cannon;
@@ -51,10 +51,15 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
+		controllerChooser.addDefault("Xbox", Type.XBCONTROLLER);
+		controllerChooser.addObject("Guitar", Type.GUITAR);
+		controllerChooser.addObject("Wii", Type.WIIMOTE);
+		controllerChooser.addObject("Nunchuck", Type.WIINUNCHUCK);
+		SmartDashboard.putData("Controller choices", controllerChooser);
 		pdp = new PowerDistributionPanel();
 		// See if Driver Station has a method to figure out
 		// the port that Xbox Controller is on
-		gamepad = new MyHID(0, Type.XBCONTROLLER);
+		gamepad = new MyHID(0, controllerChooser.getSelected());
 		gyro = new ADXRS450_Gyro();
 		System.out.println("Calibrating Gyro...");
 		gyro.calibrate();

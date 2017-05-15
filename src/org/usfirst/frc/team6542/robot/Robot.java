@@ -121,7 +121,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		
+		gamepad.setType(controllerChooser.getSelected());
+
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());
 		for (int ch : channels) {
 			SmartDashboard.putNumber(Integer.toString(ch), pdp.getCurrent(ch));

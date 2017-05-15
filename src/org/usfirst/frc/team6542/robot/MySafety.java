@@ -11,7 +11,12 @@ public class MySafety {
 		this.safe = b;
 		if (!b) {
 			for (SpeedController i : motors) {
-				i.set(0.0);
+				try {
+					i.set(0.0);
+				}
+				catch (NullPointerException ex) {
+					break;
+				}
 			}
 		}
 	}

@@ -43,7 +43,7 @@ public class MyHID extends XboxController {
 	public double getDriveForward() {
 		double r;
 		switch (type) {
-		case GUITAR: r = (getPOV(0) == type.driveForward) ? 0.5 : 0;
+		case GUITAR: r = (getPOV(0) == type.driveForward) ? 0 : 0.9;
 		break;
 		default: r = getRawAxis(type.driveForward);
 		break;
@@ -54,7 +54,7 @@ public class MyHID extends XboxController {
 	public double getDriveBackward() {
 		double r;
 		switch (type) {
-		case GUITAR: r = (getPOV(0) == type.driveBackward) ? 0.5 : 0;
+		case GUITAR: r = (getPOV(0) == type.driveBackward) ? 0 : 0.9;
 		break;
 		default: r = getRawAxis(type.driveBackward);
 		break;

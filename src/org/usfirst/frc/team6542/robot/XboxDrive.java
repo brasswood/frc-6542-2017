@@ -14,7 +14,7 @@ public class XboxDrive extends MySafety {
 	MyHID gamepad;
 	GyroBase gyro;
 	Timer timer;
-	public final double limit = 0.7;
+	public final double limit = 1.0;
 	
 	public XboxDrive(SpeedController left, SpeedController right, MyHID gamepad, GyroBase gyro) {
 		this(left, right, gamepad);
